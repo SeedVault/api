@@ -1,0 +1,53 @@
+{
+  "name": "@seed-vault/api",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "build": "babel server --delete-dir-on-start --copy-files --out-dir dist",
+    "lint": "NODE_ENV=test eslint server lib tests",
+    "serve": "NODE_ENV=development DEBUG=API.* nodemon --watch .env --watch server --watch lib --exec 'babel-node -r dotenv/config -- ./server/bin/www'",
+    "serve:test": "NODE_ENV=test node -r dotenv/config ./dist/bin/www",
+    "serve:prod": "NODE_ENV=production node -r dotenv/config ./dist/bin/www",
+    "test": "jest --runInBand --detectOpenHandles --useStderr --forceExit",
+    "test:users": "jest -i ./tests/unit/users/*.test.js --runInBand --detectOpenHandles --useStderr --forceExit",
+    "test:components": "jest -i ./tests/unit/bots/ComponentService.test.js --runInBand --detectOpenHandles --useStderr --forceExit",
+    "test:bots": "jest -i ./tests/unit/bots/BotService.test.js --runInBand --detectOpenHandles --useStderr --forceExit"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.7.7",
+    "@seed-vault/seedtoken-api-client": "github:SeedVault/seedtoken-api-client",
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.19.0",
+    "connect-redis": "^4.0.3",
+    "cookie-parser": "~1.4.4",
+    "cors": "^2.8.5",
+    "csurf": "^1.10.0",
+    "debug": "^4.1.1",
+    "dotenv": "^8.2.0",
+    "ejs": "^3.0.1",
+    "express": "~4.17.1",
+    "express-session": "^1.17.0",
+    "helmet": "^3.21.2",
+    "http-errors": "~1.7.3",
+    "mongoose": "^5.8.5",
+    "mongoose-unique-validator": "^2.0.3",
+    "morgan": "~1.9.1",
+    "multer": "^1.4.2",
+    "nodemailer": "^6.4.2",
+    "passport": "^0.4.1",
+    "passport-local": "^1.0.0",
+    "redis": "^2.8.0",
+    "uuid4": "^1.1.4"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.7.7",
+    "@babel/core": "^7.7.7",
+    "@babel/node": "^7.7.7",
+    "@babel/plugin-transform-runtime": "^7.7.6",
+    "@babel/preset-env": "^7.7.7",
+    "eslint": "^6.8.0",
+    "eslint-plugin-jest": "^23.3.0",
+    "jest": "^24.9.0",
+    "nodemon": "^2.0.2"
+  }
+}
