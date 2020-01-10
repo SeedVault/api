@@ -3,8 +3,7 @@ var router = express.Router();
 const ValidationError = require('mongoose/lib/error/validation');
 const { ComponentService, ForbiddenComponentError } =
   require('../../lib/bots/services/ComponentService');
- const { UserService } =
-  require('../../lib/users/services/UserService');
+const { UserService } = require('../../lib/users/services/UserService');
 const fs = require('fs');
 const {resolve} = require("path");
 var multer  = require('multer')
@@ -129,6 +128,30 @@ module.exports = function (passport, csrfProtection) {
   );
 
   /**
+   * GET /v1/components/lookup
+   */
+  router.get('/lookup', csrfProtection,
+    async function (req, res) {
+      if (!req.user) {
+        return res.status(403).json('Forbidden');
+      }
+      try {
+        const data = await ComponentService.findComponentsWithIdInArray(req.query.ids.split(','));
+        res.status(200).json(data);
+      } catch (err) {
+        if (err instanceof ForbiddenComponentError) {
+          return res.status(403).json(err);
+        }
+        if (err instanceof ValidationError) {
+          return res.status(422).json(err);
+        }
+        return res.status(500).json(err);
+      }
+    },
+  );
+
+
+  /**
    * GET /v1/components/:id
    */
   router.get('/:id', csrfProtection,
@@ -187,7 +210,49 @@ module.exports = function (passport, csrfProtection) {
     },
   );
 
-  async function getPaginatedResults(req, res, screen) {
+
+  async function getPropertiesForValueType(req, res, valueType) {
+    if (!req.user) {
+      return res.status(403).json('Forbidden');
+    }
+    try {
+      const data = await ComponentService.getPropertiesForValueType(
+        req.params.id,
+        valueType,
+      );
+      res.status(200).json(data);
+    } catch (err) {
+      if (err instanceof ForbiddenComponentError) {
+        return res.status(403).json(err);
+      }
+      if (err instanceof ValidationError) {
+        return res.status(422).json(err);
+      }
+      return res.status(500).json(err);
+    }
+  }
+
+  /**
+   * GET /v1/components/:id/properties/developer
+   */
+  router.get('/:id/properties/developer', csrfProtection,
+    async function (req, res) {
+      return await getPropertiesForValueType(req, res, 'developer');
+    },
+  );
+
+
+  /**
+   * GET /v1/components/:id/properties/publisher
+   */
+  router.get('/:id/properties/publisher', csrfProtection,
+    async function (req, res) {
+      return await getPropertiesForValueType(req, res, 'publisher');
+    },
+  );
+
+
+  async function getPaginatedResults(req, res, screen, componentType) {
     if (!req.user) {
       return res.status(403).json('Forbidden');
     }
@@ -200,7 +265,9 @@ module.exports = function (passport, csrfProtection) {
       const resultsPerPage = 10;
       const page = req.query.page || 1;
       const search = req.query.search || '';
-      let componentType = ['botengine', 'channel'];
+      if (typeof componentType === 'undefined') {
+        componentType = ['botengine', 'channel'];
+      }
       if (req.serviceOnly) {
         componentType = 'service';
       }
@@ -250,6 +317,17 @@ module.exports = function (passport, csrfProtection) {
       return await getPaginatedResults(req, res, 'marketplace');
     },
   );
+
+
+  /**
+   * GET /v1/components/type/:componentType
+   */
+  router.get('/type/:componentType', csrfProtection,
+    async function (req, res) {
+      return await getPaginatedResults(req, res, 'marketplace', req.params.componentType);
+    },
+  );
+
 
   return router;
 
