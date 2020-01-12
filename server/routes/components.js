@@ -136,8 +136,18 @@ module.exports = function (passport, csrfProtection) {
         return res.status(403).json('Forbidden');
       }
       try {
-        const data = await ComponentService.findComponentsWithIdInArray(req.query.ids.split(','));
-        res.status(200).json(data);
+        const components = await ComponentService.findComponentsWithIdInArray(req.query.ids.split(','));
+        let filteredComponents = [];
+        for (let i = 0; i < components.length; i++) {
+          const c = components[i];
+          filteredComponents.push({
+            _id: c._id,
+            name: c.name,
+            pictureUrl: c.pictureUrl,
+          });
+        }
+        console.log(filteredComponents);
+        res.status(200).json(filteredComponents);
       } catch (err) {
         if (err instanceof ForbiddenComponentError) {
           return res.status(403).json(err);

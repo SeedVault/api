@@ -162,6 +162,22 @@ module.exports = function (passport, csrfProtection) {
     },
   );
 
+  /**
+   * GET /v1/bots/:id/subscription
+   */
+  router.get('/:id/subscription', csrfProtection,
+    async function (req, res) {
+      if (!req.user) {
+        return res.status(403).json('Forbidden');
+      }
+      try {
+        const subscription = await BotService.findSubscription(req.params.id, req.user.id);
+        res.status(200).json(subscription);
+      } catch (err) {
+        return res.status(500).json(err);
+      }
+    },
+  );
 
   /**
    * GET /v1/bots/:id/delete
@@ -274,12 +290,14 @@ module.exports = function (passport, csrfProtection) {
       }
       try {
         let botId = req.params.id;
-        const subscriptionType = req.body.subscriptionType;
-        let data = deserializeMaps(req.body.values);
+        const data = deserializeMaps(req.body.subscription);
+        if (data.properties.length > 0) {
+          data.properties = new Map(JSON.parse(data.properties[0].values));
+        }
         const subscription = await BotService.subscribe(
-          req.user.username,
           botId,
-          subscriptionType,
+          req.user.id,
+          data.subscriptionType,
           data.properties,
           data.botengine,
           data.services,
@@ -287,6 +305,7 @@ module.exports = function (passport, csrfProtection) {
         );
         res.status(200).json({saved: true, subscriptionId: subscription.id});
       } catch (err) {
+        console.log(err);
         if (err instanceof ForbiddenBotError) {
           return res.status(403).json(err);
         }
