@@ -297,7 +297,6 @@ module.exports = function (passport, csrfProtection) {
       );
       res.status(200).json(data);
     } catch (err) {
-      console.error(err);
       if (err instanceof ForbiddenComponentError) {
         return res.status(403).json(err);
       }
