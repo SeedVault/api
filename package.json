@@ -14,7 +14,6 @@
     "test:bots": "jest -i ./tests/unit/bots/BotService.test.js --runInBand --detectOpenHandles --useStderr --forceExit"
   },
   "dependencies": {
-    "@babel/runtime": "^7.7.7",
     "@seed-vault/seedtoken-api-client": "github:SeedVault/seedtoken-api-client",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
@@ -40,13 +39,14 @@
     "uuid4": "^1.1.4"
   },
   "devDependencies": {
-    "@babel/cli": "^7.7.7",
-    "@babel/core": "^7.7.7",
-    "@babel/node": "^7.7.7",
-    "@babel/plugin-transform-runtime": "^7.7.6",
-    "@babel/preset-env": "^7.7.7",
+    "@babel/cli": "^7.8.0",
+    "@babel/core": "^7.8.0",
+    "@babel/node": "^7.8.0",
+    "@babel/plugin-transform-runtime": "^7.8.0",
+    "@babel/preset-env": "^7.8.2",
+    "@babel/runtime": "^7.8.0",
     "eslint": "^6.8.0",
-    "eslint-plugin-jest": "^23.4.0",
+    "eslint-plugin-jest": "^23.6.0",
     "jest": "^24.9.0",
     "nodemon": "^2.0.2"
   }

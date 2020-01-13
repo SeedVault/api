@@ -92,6 +92,7 @@ module.exports = function (passport, csrfProtection) {
         }
         res.status(200).json({saved: true, id: id});
       } catch (err) {
+        console.error(err);
         if (err instanceof ValidationError) {
           res.status(422).json(err);
         } else {
@@ -174,6 +175,7 @@ module.exports = function (passport, csrfProtection) {
         const subscription = await BotService.findSubscription(req.params.id, req.user.id);
         res.status(200).json(subscription);
       } catch (err) {
+        console.log(err);
         return res.status(500).json(err);
       }
     },
@@ -305,7 +307,6 @@ module.exports = function (passport, csrfProtection) {
         );
         res.status(200).json({saved: true, subscriptionId: subscription.id});
       } catch (err) {
-        console.log(err);
         if (err instanceof ForbiddenBotError) {
           return res.status(403).json(err);
         }
@@ -328,7 +329,7 @@ module.exports = function (passport, csrfProtection) {
       }
       try {
         let botId = req.params.id;
-        await BotService.unsubscribe(req.user.username, botId);
+        await BotService.unsubscribe(botId, req.user.id);
         res.status(200).json({unsubscribed: true});
       } catch (err) {
         if (err instanceof ForbiddenBotError) {
