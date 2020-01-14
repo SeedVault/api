@@ -27,7 +27,7 @@ app.use(express.json());
 
 // API Integration Authentication
 var apiIntegrationAuth = function (req, res, next) {
-  if (req.header('Wallet-API-Key') === process.env.API_INTEGRATION_KEY) {
+  if (req.header('API-INTEGRATION-KEY') === process.env.API_INTEGRATION_KEY) {
     return next();
   } else {
     res.status(403).json('Forbidden');
