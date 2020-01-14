@@ -6,6 +6,7 @@ module.exports = {
     // Options reference: https://pm2.keymetrics.io/docs/usage/application-declaration/
     node_args: '-r dotenv/config',
     instances: 1,
+    exec_mode: 'fork_mode',
     autorestart: true,
     watch: false,
     max_memory_restart: '1G',
