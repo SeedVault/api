@@ -29,6 +29,19 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 
+// API Integration Authentication
+var apiIntegrationAuth = function (req, res, next) {
+  if (req.header('Wallet-API-Key') === process.env.API_INTEGRATION_KEY) {
+    return next();
+  } else {
+    res.status(403).json('Forbidden');
+  }
+}
+
+// Mount integrations route before CSRF is appended to the app stack
+var integrationsRouter = require('./routes/integrations');
+app.use('/v1/integrations', apiIntegrationAuth, integrationsRouter);
+
 // CSRF protection
 const csrfProtection = csurf({ cookie: true, domain: '.seedtoken.test' });
 app.use(csrfProtection);
