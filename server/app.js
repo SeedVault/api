@@ -24,10 +24,6 @@ app.set('view engine', 'ejs');
 app.use(logger('dev'));
 app.use(helmet());
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieParser());
 
 // API Integration Authentication
 var apiIntegrationAuth = function (req, res, next) {
@@ -39,8 +35,13 @@ var apiIntegrationAuth = function (req, res, next) {
 }
 
 // Mount integrations route before CSRF is appended to the app stack
-var integrationsRouter = require('./routes/integrations');
+var integrationsRouter = require('./routes/integrations')();
 app.use('/v1/integrations', apiIntegrationAuth, integrationsRouter);
+
+app.use(express.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(cookieParser());
 
 // CSRF protection
 const csrfProtection = csurf({ cookie: true, domain: '.seedtoken.test' });

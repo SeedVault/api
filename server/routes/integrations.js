@@ -30,10 +30,13 @@ module.exports = function () {
   router.post('/wallet/send',
     async function (req, res) {
       try {
+        const username = req.body.username || '';
+        const to = req.body.to || '';
+        const amount = req.body.amount || '0';
         const data = await WalletService.send(
-          req.user.username,
-          req.body.to,
-          req.body.amount,
+          username,
+          to,
+          amount,
           true
         );
         res.status(200).json(data);
