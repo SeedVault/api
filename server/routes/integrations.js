@@ -18,6 +18,8 @@ module.exports = function () {
         if (err instanceof ValidationError) {
           res.status(422).json(err);
         } else {
+          console.error(err);
+          console.trace();
           return res.status(500).json(err);
         }
       }
@@ -44,6 +46,8 @@ module.exports = function () {
         if (err instanceof ValidationError) {
           res.status(422).json(err);
         } else {
+          console.error(err);
+          console.trace();
           return res.status(500).json(err);
         }
       }
