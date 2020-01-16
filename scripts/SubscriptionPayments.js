@@ -18,6 +18,14 @@ async function botSubscriptionPayment() {
     let bss = await BotSubscription.aggregate([
         {$match: {'subscriptionType': {$eq: 'month'}}},
         {$lookup: {
+            from: "users",
+            localField: "user",
+            foreignField: "_id",
+            as: "suser"
+            }
+        },
+        {$unwind: "$suser"},
+        {$lookup: {
                 from: "bots",
                 localField: "bot",
                 foreignField: "_id",
@@ -25,6 +33,14 @@ async function botSubscriptionPayment() {
             }
         },
         {$unwind: '$bot'},
+         {$lookup: {
+            from: "users",
+            localField: "bot.user",
+            foreignField: "_id",
+            as: "buser"
+            }
+        },
+        {$unwind: "$buser"},
         {$lookup: {
             from: "subscription_payments",
             localField: "_id",
@@ -43,27 +59,27 @@ async function botSubscriptionPayment() {
     for (let i = 0; i < bss.length; i += 1) {
         bs = bss[i]
 
-        //console.dir(bs, { depth: null });
+//        console.dir(bs, { depth: null });
         if (!bs.subscription_payments) {
             bs.subscription_payments = {}
         }
 
-        if (bs.username == bs.bot.username) {
-            //console.log('Subscriber and bot owner are the same user. No need to do payment.')
+        if (bs.suser.username == bs.buser.username) {
+//            console.log('Subscriber and bot owner are the same user. No need to do payment.')
             continue
         }
         if (bs.bot.pricePerMonth == 0) {
-            //console.log('Price per month is 0. No need to do payment.')
+//            console.log('Price per month is 0. No need to do payment.')
             continue
         }
 
         console.log('-Bot Subscription Payments-------------------------------------------------------------------------------------------------------------')
         console.log('Token: ' + bs.token + ' - lastPayment: ' + bs.subscription_payments.lastPaymentDate)
-        console.log('Trying to make month payment from bot subscriber (' + bs.username + ') to bot owner (' + bs.bot.username + ') - ' + bs.bot.pricePerMonth + ' tokens...')
+        console.log('Trying to make month payment from bot subscriber (' + bs.suser.username + ') to bot owner (' + bs.buser.username + ') - ' + bs.bot.pricePerMonth + ' tokens...')
 
 
         try {
-            let tx = await WalletService.send(bs.username, bs.bot.username, String(bs.bot.pricePerMonth), true) //use await to avoid hammering the node
+            let tx = await WalletService.send(bs.suser.username, bs.buser.username, String(bs.bot.pricePerMonth), true) //use await to avoid hammering the node
             console.log('TX hash: ' + tx.transactionId)
 
             let q
@@ -97,6 +113,14 @@ async function serviceSubscriptionPayment() {
     let bss = await Bot.aggregate([
         {"$unwind": '$services'},
         {"$match": {'services.subscriptionType': {$eq: 'month'}}},
+        {"$lookup": {
+            from: "users",
+            localField: "user",
+            foreignField: "_id",
+            as: "buser"
+            }
+        },
+        {$unwind: "$buser"},
         {
             "$lookup" : {
                 "from" : "components",
@@ -106,6 +130,14 @@ async function serviceSubscriptionPayment() {
             }
         },
         {"$unwind": "$service"},
+         {"$lookup": {
+            from: "users",
+            localField: "service.user",
+            foreignField: "_id",
+            as: "suser"
+            }
+        },
+        {$unwind: "$suser"},
         {"$lookup": {
                 from: "subscription_payments",
                 localField: "services._id",
@@ -122,27 +154,27 @@ async function serviceSubscriptionPayment() {
     for (let i = 0; i < bss.length; i += 1) {
         bs = bss[i]
 
-        //console.dir(bs, { depth: null });
+//        console.dir(bs, { depth: null });
         if (!bs.subscription_payments) {
             bs.subscription_payments = {}
         }
 
-        if (bs.username == bs.service.username) {
-            //console.log('Subscriber and bot owner are the same user. No need to do payment.')
+        if (bs.buser.username == bs.suser.username) {
+//            console.log('Subscriber and bot owner are the same user. No need to do payment.')
             continue
         }
         if (bs.service.pricePerMonth == 0) {
-            //console.log('Price per month is 0. No need to do payment.')
+//            console.log('Price per month is 0. No need to do payment.')
             continue
         }
 
         console.log('-Components Subscription Payments---------------------------------------------------------------------------------------------------------')
         console.log('Component: ' + bs.service.name + ' - bot: ' + bs.botId + ' - lastPayment: ' + bs.subscription_payments.lastPaymentDate)
-        console.log('Trying to make month payment from component subscriber (' + bs.username + ') to component owner (' + bs.service.username + ') - ' + bs.service.pricePerMonth + ' tokens...')
+        console.log('Trying to make month payment from component subscriber (' + bs.buser.username + ') to component owner (' + bs.suser.username + ') - ' + bs.service.pricePerMonth + ' tokens...')
 
 
         try {
-            let tx = await WalletService.send(bs.username, bs.service.username, String(bs.service.pricePerMonth), true) //use await to avoid hammering the node
+            let tx = await WalletService.send(bs.buser.username, bs.suser.username, String(bs.service.pricePerMonth), true) //use await to avoid hammering the node
             console.log('TX hash: ' + tx.transactionId)
 
             let q
@@ -170,10 +202,10 @@ async function serviceSubscriptionPayment() {
 db()
 
 botSubscriptionPayment().then(() => {
-    console.log('Bot Subscriptions done.')
+//    console.log('Bot Subscriptions done.')
 
     serviceSubscriptionPayment().then(() => {
-        console.log('Service Subscriptions done.')
+//        console.log('Service Subscriptions done.')
         process.exit()
     })
 
