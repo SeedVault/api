@@ -11,7 +11,8 @@
     "test": "jest --runInBand --detectOpenHandles --useStderr --forceExit",
     "test:users": "jest -i ./tests/unit/users/*.test.js --runInBand --detectOpenHandles --useStderr --forceExit",
     "test:components": "jest -i ./tests/unit/bots/ComponentService.test.js --runInBand --detectOpenHandles --useStderr --forceExit",
-    "test:bots": "jest -i ./tests/unit/bots/BotService.test.js --runInBand --detectOpenHandles --useStderr --forceExit"
+    "test:bots": "jest -i ./tests/unit/bots/BotService.test.js --runInBand --detectOpenHandles --useStderr --forceExit",
+    "test:reviews": "jest -i ./tests/unit/bots/ReviewService.test.js --runInBand --detectOpenHandles --useStderr --forceExit"
   },
   "dependencies": {
     "@seed-vault/seedtoken-api-client": "github:SeedVault/seedtoken-api-client",
@@ -20,7 +21,7 @@
     "connect-redis": "^4.0.3",
     "cookie-parser": "~1.4.4",
     "cors": "^2.8.5",
-    "csurf": "^1.10.0",
+    "csurf": "^1.11.0",
     "debug": "^4.1.1",
     "dotenv": "^8.2.0",
     "ejs": "^3.0.1",
@@ -29,7 +30,7 @@
     "helmet": "^3.21.2",
     "http-errors": "~1.7.3",
     "moment": "^2.24.0",
-    "mongoose": "^5.8.7",
+    "mongoose": "^5.8.9",
     "mongoose-unique-validator": "^2.0.3",
     "morgan": "~1.9.1",
     "multer": "^1.4.2",

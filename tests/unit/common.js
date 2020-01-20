@@ -72,6 +72,8 @@ const common = {
       headers:[],
       predefinedVars:[],
       mappedVars:[],
+      averageRating: 0,
+      reviewsCount: 0,
       user: user,
     }
   },
@@ -141,6 +143,9 @@ const common = {
       pricePerUse: 0,
       pricePerMonth: 0,
       status: 'enabled',
+      averageRating: 0,
+      reviewsCount: 0,
+      subscriptionsCount: 0,
       user: user,
       properties: [],
       botEngine: {

@@ -68,6 +68,7 @@ var authRouter = require('./routes/auth')(passport, csrfProtection);
 var profileRouter = require('./routes/profile')(passport, csrfProtection);
 var usersRouter = require('./routes/users')(passport, csrfProtection);
 var walletRouter = require('./routes/wallet')(passport, csrfProtection);
+var reviewsRouter = require('./routes/reviews')(passport, csrfProtection);
 var componentsRouter = require('./routes/components')(passport, csrfProtection);
 var botsRouter = require('./routes/bots')(passport, csrfProtection);
 
@@ -76,6 +77,7 @@ app.use('/v1/auth', cors(corsOptions), authRouter);
 app.use('/v1/profile', cors(corsOptions), profileRouter);
 app.use('/v1/users', cors(corsOptions), usersRouter);
 app.use('/v1/wallet', cors(corsOptions), walletRouter);
+app.use('/v1/reviews', cors(corsOptions), reviewsRouter);
 app.use('/v1/components', cors(corsOptions), (req, res, next) => {
   req.serviceOnly = false;
   next();

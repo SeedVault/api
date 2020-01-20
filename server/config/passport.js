@@ -46,6 +46,7 @@ passport.deserializeUser(async function(id, cb) {
       'firstname': user.firstname,
       'lastname': user.lastname,
       'picture': user.pictureUrl,
+      'countryCode': user.countryCode,
     });
   } catch (err) {
     return cb(err, false);
