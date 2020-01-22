@@ -80,7 +80,8 @@ module.exports = function (passport, csrfProtection) {
         req.body.countryCode,
         req.body.role,
         req.body.referralCode,
-        req.body.password
+        req.body.password,
+        req.body.recaptchaToken,
       );
       res.status(201).json({saved: true});
     } catch (err) {
@@ -111,6 +112,8 @@ module.exports = function (passport, csrfProtection) {
   });
 
 
+
+
   /**
    * POST /auth/verify-email-code
    */
@@ -118,10 +121,15 @@ module.exports = function (passport, csrfProtection) {
     try {
       var credentials = new VerificationCredentials({
         email: req.body.email,
-        verificationCode: req.body.verificationCode
+        verificationCode: req.body.verificationCode,
+        recaptchaToken: req.body.recaptchaToken,
       });
       await VerificationCredentials.check(credentials);
-      let user = await UserService.loginWithVerificationCode(credentials.email, credentials.verificationCode);
+      let user = await UserService.loginWithVerificationCode(
+        credentials.email,
+        credentials.verificationCode,
+        credentials.recaptchaToken,
+      );
       req.login(user, function (err) {
         if (!err){
           res.status(200).json({verified: true});
