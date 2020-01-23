@@ -65,6 +65,7 @@ app.use(passport.session());
 // Routes
 var indexRouter = require('./routes/index');
 var authRouter = require('./routes/auth')(passport, csrfProtection);
+var statsRouter = require('./routes/stats')(passport, csrfProtection);
 var profileRouter = require('./routes/profile')(passport, csrfProtection);
 var usersRouter = require('./routes/users')(passport, csrfProtection);
 var walletRouter = require('./routes/wallet')(passport, csrfProtection);
@@ -74,6 +75,7 @@ var botsRouter = require('./routes/bots')(passport, csrfProtection);
 
 app.use('/', cors(corsOptions), indexRouter);
 app.use('/v1/auth', cors(corsOptions), authRouter);
+app.use('/v1/stats', cors(corsOptions), statsRouter);
 app.use('/v1/profile', cors(corsOptions), profileRouter);
 app.use('/v1/users', cors(corsOptions), usersRouter);
 app.use('/v1/wallet', cors(corsOptions), walletRouter);

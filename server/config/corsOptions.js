@@ -3,6 +3,7 @@ const whitelist = [
   process.env.VUE_APP_API_URL,
   process.env.VUE_APP_GREENHOUSE_URL,
   process.env.VUE_APP_WALLET_URL,
+  process.env.VUE_APP_STATS_URL,
 ];
 const corsOptions = {
   origin: function (origin, callback) {
