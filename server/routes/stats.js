@@ -26,7 +26,8 @@ module.exports = function (passport, csrfProtection) {
             lastname: results[i].lastname,
             email: results[i].email,
             referralCode: results[i].referralCode,
-            createdAt: results[i].createdAt
+            createdAt: results[i].createdAt,
+            lastLogin: results[i].lastLogin
           });
         }
         res.json(data);
