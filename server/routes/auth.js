@@ -72,6 +72,12 @@ module.exports = function (passport, csrfProtection) {
    */
   router.post('/sign-up', async (req, res) => {
     try {
+      let referralCode = '';
+      if (process.env.VUE_APP_API_BETA_ONLINE === 'yes') {
+        referralCode = 'BETA';
+      } else {
+        referralCode = req.body.referralCode;
+      }
       await UserService.saveRegistrationForm(
         req.body.username,
         req.body.email,
@@ -79,7 +85,7 @@ module.exports = function (passport, csrfProtection) {
         req.body.lastname,
         req.body.countryCode,
         req.body.role,
-        req.body.referralCode,
+        referralCode,
         req.body.password,
         req.body.recaptchaToken,
       );
