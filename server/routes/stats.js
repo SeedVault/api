@@ -13,7 +13,8 @@ module.exports = function (passport, csrfProtection) {
       if (!req.user) {
         return res.status(403).json('Forbidden');
       }
-      if (req.user.username.toLowerCase() !== process.env.VUE_APP_API_ADMIN_USERNAME.toLowerCase()) {
+      const whitelist = process.env.VUE_APP_API_STATS_WHITELIST.split(',');
+      if (!whitelist.includes(req.user.username.toLowerCase())) {
         return res.status(403).json('Forbidden');
       }
       try {
